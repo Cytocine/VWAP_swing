@@ -7,7 +7,7 @@
 const CACHE_NAME = 'zs-ema-backtester-shell-v1';
 
 const SHELL_ASSETS = [
-  './alpaca_zscore_atr_backtester.html',
+  './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
