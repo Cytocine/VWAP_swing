@@ -1,0 +1,37 @@
+{
+  "name": "Z-Score/EMA21 Backtester",
+  "short_name": "ZS Backtester",
+  "description": "Alpaca-powered Z-Score/EMA21 crossover chart, ATR stop/target backtester, watchlist 5-bar scanner and RS ranker.",
+  "start_url": "./alpaca_zscore_atr_backtester.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
