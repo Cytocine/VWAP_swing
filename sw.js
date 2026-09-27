@@ -1,24 +1,24 @@
-// Service worker for the Z-Score/EMA21 Backtester PWA.
-// Only the static "app shell" is cached (this file, the HTML, manifest, icons and the
-// charting library). Live requests to Alpaca's market-data API are always fetched fresh
-// from the network and are never cached, since cached price/quote data would be stale
-// and misleading for a trading tool.
-
-const CACHE_NAME = 'zs-ema-backtester-shell-v1';
+const CACHE_NAME = 'zs-ema-backtester-shell-v2';
 
 const SHELL_ASSETS = [
+  './',
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  'https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js',
+  'https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_ASSETS)).catch((err) => {
-      // Don't let a single failed asset (e.g. offline first install) block activation
-      console.error('SW precache failed:', err);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      for (const asset of SHELL_ASSETS) {
+        try {
+          await cache.add(new Request(asset, { mode: 'cors' }));
+        } catch (err) {
+          console.warn('Failed to cache asset:', asset, err);
+        }
+      }
     })
   );
   self.skipWaiting();
@@ -33,32 +33,43 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-function isLiveDataRequest(url) {
-  return url.hostname.endsWith('alpaca.markets');
-}
-
 self.addEventListener('fetch', (event) => {
+  // Only handle standard HTTP/HTTPS GET requests; let browser handle POST, PUT, etc.
+  if (event.request.method !== 'GET') return;
+
   const url = new URL(event.request.url);
 
-  // Never cache live market data / API calls - always hit the network directly.
-  if (isLiveDataRequest(url)) {
-    return; // let the browser handle it normally (no respondWith = passthrough)
+  // Bypass service worker entirely for Alpaca market data
+  if (url.hostname.includes('alpaca.markets')) {
+    return;
   }
 
-  // Cache-first for the app shell, falling back to network (and caching the result)
-  // for anything else same-origin/CDN so the app keeps working offline after first load.
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request)
+  // Network-First with Cache fallback for navigation (HTML), Cache-First for static assets
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
         .then((response) => {
-          if (response && response.ok && event.request.method === 'GET') {
+          if (response && response.ok) {
             const clone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           }
           return response;
         })
-        .catch(() => cached); // offline and not cached - nothing we can do for this asset
+        .catch(() => caches.match('./index.html') || caches.match('./'))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        if (response && response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      });
     })
   );
 });
