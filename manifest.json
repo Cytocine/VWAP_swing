@@ -2,7 +2,7 @@
   "name": "Z-Score/EMA21 Backtester",
   "short_name": "ZS Backtester",
   "description": "Alpaca-powered Z-Score/EMA21 crossover chart, ATR stop/target backtester, watchlist 5-bar scanner and RS ranker.",
-  "start_url": "./alpaca_zscore_atr_backtester.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
