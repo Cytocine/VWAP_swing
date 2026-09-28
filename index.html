@@ -426,7 +426,7 @@
     <div class="form-group">
       <label for="lookbackDays">Days</label>
       <select id="lookbackDays">
-        <option value="5" >5D</option>
+        <option value="5">5D</option>
         <option value="15" selected>15D</option>
         <option value="30">30D</option>
         <option value="60">60D</option>
@@ -464,7 +464,7 @@
     <button id="rsSortBtn" style="background: #d29922;" title="Rank watchlist by RS vs SPY (RS>80)">RS Sort</button>
   </header>
 
-  <!-- Drawing & Action Toolbar (Playback controls stay permanently visible here) -->
+  <!-- Drawing & Action Toolbar -->
   <div id="toolbar">
     <button class="tool-btn" id="tool-cursor">Select</button>
     <button class="tool-btn" id="tool-trendline">Trend Line</button>
@@ -522,7 +522,6 @@
       </div>
     </div>
 
-    <!-- Floating affordance button -->
     <button id="reopenScannerBtn" title="Show scan hits">🎯 Hits</button>
   </div>
 
@@ -642,27 +641,40 @@
       if (!daySegments.length) {
         bgCtx.fillStyle = '#0e1117';
         bgCtx.fillRect(0, 0, w, h);
-        return;
+      } else {
+        const timeScale = chart.timeScale();
+        daySegments.forEach((seg, idx) => {
+          const x1 = timeScale.timeToCoordinate(seg.startTime) || 0;
+          const nextSeg = daySegments[idx + 1];
+          const x2 = nextSeg ? (timeScale.timeToCoordinate(nextSeg.startTime) || w) : w;
+
+          bgCtx.fillStyle = DAY_COLORS[idx % DAY_COLORS.length];
+          bgCtx.fillRect(x1, 0, Math.max(0, x2 - x1), h);
+
+          if (idx > 0 && x1 > 0 && x1 < w) {
+            bgCtx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            bgCtx.lineWidth = 1;
+            bgCtx.beginPath();
+            bgCtx.moveTo(x1, 0);
+            bgCtx.lineTo(x1, h);
+            bgCtx.stroke();
+          }
+        });
       }
 
-      const timeScale = chart.timeScale();
-      daySegments.forEach((seg, idx) => {
-        const x1 = timeScale.timeToCoordinate(seg.startTime) || 0;
-        const nextSeg = daySegments[idx + 1];
-        const x2 = nextSeg ? (timeScale.timeToCoordinate(nextSeg.startTime) || w) : w;
-
-        bgCtx.fillStyle = DAY_COLORS[idx % DAY_COLORS.length];
-        bgCtx.fillRect(x1, 0, Math.max(0, x2 - x1), h);
-
-        if (idx > 0 && x1 > 0 && x1 < w) {
-          bgCtx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-          bgCtx.lineWidth = 1;
-          bgCtx.beginPath();
-          bgCtx.moveTo(x1, 0);
-          bgCtx.lineTo(x1, h);
-          bgCtx.stroke();
-        }
-      });
+      // --- Background Watermark (Symbol + Timeframe) ---
+      const activeSym = (document.getElementById('symbol').value || '').trim().toUpperCase();
+      const activeTf = document.getElementById('timeframe').value || '';
+      if (activeSym) {
+        bgCtx.save();
+        bgCtx.textAlign = 'center';
+        bgCtx.textBaseline = 'middle';
+        bgCtx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+        bgCtx.font = `bold ${Math.max(48, Math.round(w * 0.08))}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        const tfLabel = activeTf.replace('Min', 'M').replace('Hour', 'H').replace('Day', 'D');
+        bgCtx.fillText(`${activeSym} · ${tfLabel}`, w / 2, h / 2);
+        bgCtx.restore();
+      }
     }
 
     chart.timeScale().subscribeVisibleLogicalRangeChange(() => {
@@ -1235,6 +1247,7 @@
       const fetchDays = Math.max(lookbackDays, INDICATOR_FETCH_DAYS);
 
       document.getElementById('symbol').value = symbol;
+      renderDayBackgrounds();
       setStatus(`Loading ${symbol} (${lookbackDays}D ${timeframe})...`);
 
       try {
@@ -1277,6 +1290,14 @@
     document.getElementById('loadBtn').addEventListener('click', () => {
       const symbol = document.getElementById('symbol').value.trim().toUpperCase();
       loadChartForSymbol(symbol);
+    });
+
+    document.getElementById('symbol').addEventListener('input', () => {
+      renderDayBackgrounds();
+    });
+
+    document.getElementById('timeframe').addEventListener('change', () => {
+      renderDayBackgrounds();
     });
 
     document.getElementById('toggleParamsBtn').addEventListener('click', () => {
@@ -1543,8 +1564,8 @@
       const apiSecret = document.getElementById('apiSecret').value.trim();
       const timeframe = document.getElementById('timeframe').value;
       const watchlistRaw = document.getElementById('watchlistInput').value.trim();
-      const lookbackDays = parseInt(document.getElementById('lookbackDays').value, 10) || 5;
-      const rsDays = Math.max(lookbackDays, 10);
+      const lookbackDays = parseInt(document.getElementById('lookbackDays').value, 10) || 15;
+      const rsDays = Math.max(lookbackDays, 15);
 
       if (!apiKey || !apiSecret) {
         setStatus('Please enter Alpaca API credentials.', true);
