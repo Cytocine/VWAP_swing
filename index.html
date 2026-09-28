@@ -316,6 +316,7 @@
       border-radius: 3px;
       font-weight: 700;
       font-size: 10px;
+      white-space: nowrap;
     }
 
     .badge-sell {
@@ -326,6 +327,18 @@
       border-radius: 3px;
       font-weight: 700;
       font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .badge-rs {
+      background: rgba(210, 153, 34, 0.15);
+      color: #d29922;
+      border: 1px solid #d29922;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 9px;
+      margin-left: 4px;
     }
 
     #status-overlay {
@@ -457,16 +470,17 @@
 
     <div class="form-group" style="margin-left: 4px;">
       <label for="watchlistInput">Watchlist</label>
-      <input type="text" id="watchlistInput" value="AA, AAL, ABBV, ABT, ACB, ACN, ADBE, ADSK, AFRM, AGNC, ALHC, AMD, AMZN, APP, ARM, ASPI, ASTS, AVDL, AXON, B, BA, BABA, BAC, BAM, BE, BMY, BULL, C, CARR, CAVA, CC, CCJ, CCL, CELH, CHWY, CLMT, CLOV, CLSK, CMG, CNQ, CORZ, COST, COTY, CPNG, CRM, CRML, CRWD, CRWV, CVNA, CVS, DAR, DBX, DELL, DJT, DKNG, DOW, EBAY, ENPH, ENR, EQX, EXE, F, FCX, FDX, FSLR, GILD, GILT, GM, GME, GOOG, GOOGL, HIMS, HOOD, HPE, HPQ, HUT, INTC, IQ, IREN, IWM, JBLU, JD, JMIA, JNJ, JPM, KHC, KMI, KO, KSS, LLY, LOW, LULU, LUV, LVS, LYFT, MARA, MBLY, MBOT, META, MNDY, MO, MRK, MRVL, MSFT, MU, NEE, NEXT, NFLX, NIO, NKE, NU, NVDA, ONDS, OPEN, OWL, OXY, PBR, PCG, PDD, PEP, PFE, PG, PGEN, PINS, PLTR, PSKY, QBTS, QCOM, QD, QQQ, QS, RELY, RGTI, RIOT, RIVN, RKT, ROKU, RTX, SATS, SBUX, SERV, SLV, SMCI, SNAP, SOFI, SOUN, SPY, T, TCOM, TDOC, TEVA, TGT, TIGR, TMUS, TNA, TRMD, TSLA, TTD, U, UAL, UBER, UPS, UPST, VALE, VZ, WDC, WMT, WULF, XLE, XLF, XOM, XPEV, Z
+      <input type="text" id="watchlistInput" value="AA, AAL, ABBV, ABT, ACB, ACN, ADBE, ADSK, AFRM, AGNC, ALHC, AMD, AMZN, APP, ARM, ASPI, ASTS, AVDL, AXON, B, BA, BABA, BAC, BAM, BE, BMY, BULL, C, CARR, CAVA, CC, CCJ, CCL, CELH, CHWY, CLMT, CLOV, CLSK, CMG, CNQ, CORZ, COST, COTY, CPNG, CRM, CRML, CRWD, CRWV, CVNA, CVS, DAR, DBX, DELL, DJT, DKNG, DOW, EBAY, ENPH, ENR, EQX, EXE, F, FCX, FDX, FSLR, GILD, GILT, GM, GME, GOOG, GOOGL, HIMS, HOOD, HPE, HPQ, HUT, INTC, IQ, IREN, IWM, JBLU, JD, JMIA, JNJ, JPM, KHC, KMI, KO, KSS, LLY, LOW, LULU, LUV, LVS, LYFT, MARA, MBLY, MBOT, META, MNDY, MO, MRK, MRVL, MSFT, MU, NEE, NEXT, NFLX, NIO, NKE, NU, NVDA, ONDS, OPEN, OWL, OXY, PBR, PCG, PDD, PEP, PFE, PG, PGEN, PINS, PLTR, PSKY, QBTS, QCOM, QD, QQQ, QS, RELY, RGTI, RIOT, RIVN, RKT, ROKU, RTX, SATS, SBUX, SERV, SLV, SMCI, SNAP, SOFI, SOUN, SPY, T, TCOM, TDOC, TEVA, TGT, TIGR, TMUS, TNA, TRMD, TSLA, TTD, U, UAL, UBER, UPS, UPST, VALE, VZ, WDC, WMT, WULF, XLE, XLF, XOM, XPEV, Z,IONQ
 ,GOOGL" />
     </div>
-    <button id="scanBtn" style="background: #8957e5;">Scan 10-Bar</button>
+    <button id="scanBtn" style="background: #8957e5;" title="Rapid parallel scan sorted by Relative Strength">Fast Scan 10-Bar</button>
     <button id="rsSortBtn" style="background: #d29922;" title="Rank watchlist by RS vs SPY (RS>80)">RS Sort</button>
   </header>
 
   <!-- Drawing & Action Toolbar -->
   <div id="toolbar">
     <button class="tool-btn" id="tool-cursor">Select</button>
+    <button class="tool-btn" id="tool-pricelevel" title="Single click to drop horizontal support/resistance price level">Price Level</button>
     <button class="tool-btn" id="tool-trendline">Trend Line</button>
     <button class="tool-btn" id="tool-horizontal">Horiz Line</button>
     <button class="tool-btn" id="tool-ray">Ray</button>
@@ -512,12 +526,12 @@
     <!-- Watchlist Scanner Drawer -->
     <div id="scanner-drawer">
       <div class="drawer-header">
-        <span id="scannerTitle">10-BAR BUBBLE SCANNER</span>
+        <span id="scannerTitle">10-BAR SCANNER (RS SORTED)</span>
         <button id="scanCloseBtn" class="tool-btn" title="Close scanner / show full-screen chart">✕</button>
       </div>
       <div id="scanner-results">
         <div style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 20px;">
-          Click "Scan 10-Bar" above to scan watchlist for active Buy/Sell signals.
+          Click "Fast Scan 10-Bar" above to scan watchlist for active signals ranked by Relative Strength.
         </div>
       </div>
     </div>
@@ -662,7 +676,6 @@
         });
       }
 
-      // --- Background Watermark (Symbol + Timeframe) ---
       const activeSym = (document.getElementById('symbol').value || '').trim().toUpperCase();
       const activeTf = document.getElementById('timeframe').value || '';
       if (activeSym) {
@@ -970,6 +983,7 @@
       document.getElementById('bt-targets').textContent = `${targetHits}/${trades}`;
     }
 
+    // --- Interactive Drawing Suite with Price Level Support ---
     let currentTool = 'cursor';
     let drawings = [];
     let isDrawing = false;
@@ -977,6 +991,7 @@
 
     const toolButtons = {
       cursor: document.getElementById('tool-cursor'),
+      pricelevel: document.getElementById('tool-pricelevel'),
       trendline: document.getElementById('tool-trendline'),
       horizontal: document.getElementById('tool-horizontal'),
       ray: document.getElementById('tool-ray'),
@@ -1042,7 +1057,19 @@
     drawCanvas.addEventListener('pointerdown', (e) => {
       if (currentTool === 'cursor') return;
       const pos = getCoords(e);
-      if (!pos.time || !pos.price) return;
+      if (!pos.price) return;
+
+      // Price level: immediate single-click placement with badge
+      if (currentTool === 'pricelevel') {
+        drawings.push({
+          type: 'pricelevel',
+          p1: { time: pos.time || 0, price: pos.price }
+        });
+        renderDrawings();
+        return;
+      }
+
+      if (!pos.time) return;
       isDrawing = true;
       currentDrawing = {
         type: currentTool,
@@ -1080,14 +1107,43 @@
       const timeScale = chart.timeScale();
 
       allDrawings.forEach(d => {
-        const x1 = timeScale.timeToCoordinate(d.p1.time);
         const y1 = candleSeries.priceToCoordinate(d.p1.price);
-        const x2 = timeScale.timeToCoordinate(d.p2.time);
-        const y2 = candleSeries.priceToCoordinate(d.p2.price);
-
-        if (x1 === null || y1 === null) return;
+        if (y1 === null) return;
 
         drawCtx.save();
+
+        if (d.type === 'pricelevel') {
+          // Dedicated Price Level Drawing with interactive badge
+          drawCtx.strokeStyle = '#58a6ff';
+          drawCtx.setLineDash([4, 4]);
+          drawCtx.lineWidth = 1.5;
+          drawCtx.beginPath();
+          drawCtx.moveTo(0, y1);
+          drawCtx.lineTo(w, y1);
+          drawCtx.stroke();
+          drawCtx.setLineDash([]);
+
+          // Right-aligned pill tag
+          const tagText = `$${d.p1.price.toFixed(2)}`;
+          drawCtx.font = 'bold 11px monospace';
+          const textW = drawCtx.measureText(tagText).width;
+          const tagX = w - textW - 20;
+
+          drawCtx.fillStyle = '#1f6feb';
+          drawCtx.beginPath();
+          drawCtx.roundRect(tagX, y1 - 9, textW + 12, 18, 3);
+          drawCtx.fill();
+
+          drawCtx.fillStyle = '#ffffff';
+          drawCtx.fillText(tagText, tagX + 6, y1 + 4);
+          drawCtx.restore();
+          return;
+        }
+
+        const x1 = timeScale.timeToCoordinate(d.p1.time);
+        const x2 = d.p2 ? timeScale.timeToCoordinate(d.p2.time) : null;
+        const y2 = d.p2 ? candleSeries.priceToCoordinate(d.p2.price) : null;
+
         drawCtx.strokeStyle = '#f0883e';
         drawCtx.fillStyle = 'rgba(240, 136, 62, 0.15)';
         drawCtx.lineWidth = 2;
@@ -1101,14 +1157,14 @@
           drawCtx.font = '10px sans-serif';
           drawCtx.fillText(`$${d.p1.price.toFixed(2)}`, 10, y1 - 4);
         } else if (d.type === 'trendline') {
-          if (x2 !== null && y2 !== null) {
+          if (x1 !== null && x2 !== null && y2 !== null) {
             drawCtx.beginPath();
             drawCtx.moveTo(x1, y1);
             drawCtx.lineTo(x2, y2);
             drawCtx.stroke();
           }
         } else if (d.type === 'ray') {
-          if (x2 !== null && y2 !== null) {
+          if (x1 !== null && x2 !== null && y2 !== null) {
             const dx = x2 - x1;
             const dy = y2 - y1;
             const length = Math.sqrt(dx * dx + dy * dy);
@@ -1122,7 +1178,7 @@
             }
           }
         } else if (d.type === 'rect') {
-          if (x2 !== null && y2 !== null) {
+          if (x1 !== null && x2 !== null && y2 !== null) {
             const rx = Math.min(x1, x2);
             const ry = Math.min(y1, y2);
             const rw = Math.abs(x2 - x1);
@@ -1397,7 +1453,10 @@
             <div style="font-weight: 700; color: #fff;">${item.symbol}</div>
             <div style="color: var(--text-muted); font-size: 10px;">$${item.lastPrice.toFixed(2)}</div>
           </div>
-          <div>${item.badgeHtml}</div>
+          <div style="display:flex; align-items:center;">
+            ${item.badgeHtml}
+            ${item.rsRating !== undefined ? `<span class="badge-rs">RS ${item.rsRating}</span>` : ''}
+          </div>
         `;
         resultsContainer.appendChild(card);
       });
@@ -1450,8 +1509,20 @@
       }
     }
 
+    // Helper: Execute promises in parallel batches to prevent rate limits
+    async function mapConcurrent(items, concurrency, fn) {
+      const results = [];
+      for (let i = 0; i < items.length; i += concurrency) {
+        const chunk = items.slice(i, i + concurrency);
+        const chunkResults = await Promise.all(chunk.map(fn));
+        results.push(...chunkResults);
+      }
+      return results;
+    }
+
+    // --- High-Speed Parallel 10-Bar Scanner Sorted by Relative Strength ---
     document.getElementById('scanBtn').addEventListener('click', async () => {
-      document.getElementById('scannerTitle').textContent = '10-BAR BUBBLE SCANNER';
+      document.getElementById('scannerTitle').textContent = '10-BAR SCAN (RS SORTED)';
       const apiKey = document.getElementById('apiKey').value.trim();
       const apiSecret = document.getElementById('apiSecret').value.trim();
       const timeframe = document.getElementById('timeframe').value;
@@ -1482,28 +1553,42 @@
       updateReopenScannerVisibility();
 
       const resultsContainer = document.getElementById('scanner-results');
-      resultsContainer.innerHTML = '<div style="color: var(--text-muted); font-size:11px; text-align:center; padding:10px;">Scanning watchlist...</div>';
+      resultsContainer.innerHTML = '<div style="color: var(--text-muted); font-size:11px; text-align:center; padding:10px;">Scanning in high-speed parallel...</div>';
 
-      const scanResults = [];
+      const past = new Date(Date.now() - scanFetchDays(timeframe) * 24 * 60 * 60 * 1000);
+      const startIso = past.toISOString();
 
-      for (let i = 0; i < tickers.length; i++) {
-        const sym = tickers[i];
-        setStatus(`Scanning ${sym} (${i + 1}/${tickers.length})...`);
+      // 1. Fetch benchmark (SPY) once for relative strength calculation
+      setStatus('Fetching SPY benchmark for RS ranking...');
+      let spyPctChange = 0;
+      try {
+        const spyRes = await fetch(`https://data.alpaca.markets/v2/stocks/SPY/bars?timeframe=${timeframe}&start=${startIso}&limit=500&adjustment=raw&feed=iex`, {
+          headers: { 'APCA-API-KEY-ID': apiKey, 'APCA-API-SECRET-KEY': apiSecret }
+        });
+        if (spyRes.ok) {
+          const spyData = await spyRes.json();
+          const spyBars = spyData.bars || [];
+          if (spyBars.length >= 2) {
+            spyPctChange = ((spyBars[spyBars.length - 1].c - spyBars[0].c) / spyBars[0].c) * 100;
+          }
+        }
+      } catch (err) {
+        console.warn('SPY fetch error:', err);
+      }
 
+      // 2. Fetch all tickers in parallel chunks of 6 concurrent requests
+      let processedCount = 0;
+      const scanItem = async (sym) => {
         try {
-          const now = new Date();
-          const past = new Date(now.getTime() - scanFetchDays(timeframe) * 24 * 60 * 60 * 1000);
-          const url = `https://data.alpaca.markets/v2/stocks/${sym}/bars?timeframe=${timeframe}&start=${past.toISOString()}&limit=500&adjustment=raw&feed=iex`;
+          const url = `https://data.alpaca.markets/v2/stocks/${sym}/bars?timeframe=${timeframe}&start=${startIso}&limit=500&adjustment=raw&feed=iex`;
+          const res = await fetch(url, { headers: { 'APCA-API-KEY-ID': apiKey, 'APCA-API-SECRET-KEY': apiSecret } });
+          processedCount++;
+          setStatus(`Scanning ${processedCount}/${tickers.length} tickers...`);
 
-          const res = await fetch(url, {
-            headers: { 'APCA-API-KEY-ID': apiKey, 'APCA-API-SECRET-KEY': apiSecret },
-          });
-
-          if (!res.ok) continue;
+          if (!res.ok) return null;
           const data = await res.json();
           const bars = data.bars || [];
-
-          if (bars.length < 90) continue;
+          if (bars.length < 90) return null;
 
           const { signals } = computeZScoreSystem(bars, atrPeriod, minSepAtrMult);
 
@@ -1519,35 +1604,50 @@
             }
           }
 
-          scanResults.push({
+          if (!recentSignal) return null; // keep only active hits
+
+          const firstPrice = bars[0].c;
+          const lastPrice = bars[bars.length - 1].c;
+          const pctChange = ((lastPrice - firstPrice) / firstPrice) * 100;
+          const rsScore = pctChange - spyPctChange;
+
+          return {
             symbol: sym,
             signal: recentSignal,
             barsAgo: barsAgo,
-            lastPrice: bars[bars.length - 1].c,
-            label: recentSignal ? `${recentSignal} (${barsAgo}b ago)` : '',
+            lastPrice: lastPrice,
+            pctChange: pctChange,
+            rsScore: rsScore,
+            label: `${recentSignal} (${barsAgo}b ago)`,
             badgeHtml: recentSignal === 'BUY'
-              ? `<span class="badge-buy">BUY (${barsAgo}b ago)</span>`
-              : recentSignal === 'SELL'
-                ? `<span class="badge-sell">SELL (${barsAgo}b ago)</span>`
-                : ''
-          });
+              ? `<span class="badge-buy">BUY (${barsAgo}b)</span>`
+              : `<span class="badge-sell">SELL (${barsAgo}b)</span>`
+          };
         } catch (err) {
           console.error(`Error scanning ${sym}:`, err);
+          return null;
         }
-      }
+      };
 
-      const hitResults = scanResults.filter(r => r.signal);
+      const rawResults = await mapConcurrent(tickers, 6, scanItem);
+      const hitResults = rawResults.filter(Boolean);
 
-      setStatus(`Scan complete: ${hitResults.length} hit(s) of ${tickers.length} tickers.`);
+      setStatus(`Scan complete: ${hitResults.length} hit(s) found in ${tickers.length} tickers.`);
       setTimeout(() => { statusOverlay.style.display = 'none'; }, 2500);
 
-      resultsContainer.innerHTML = '';
       if (hitResults.length === 0) {
         resultsContainer.innerHTML = '<div style="color: var(--text-muted); font-size:11px; text-align:center; padding:10px;">No Buy/Sell hits in the last 10 bars.</div>';
         return;
       }
 
-      hitResults.sort((a, b) => (a.barsAgo || 999) - (b.barsAgo || 999));
+      // 3. Sort hits strictly by Relative Strength (strongest RS leaders first)
+      hitResults.sort((a, b) => b.rsScore - a.rsScore);
+
+      const n = hitResults.length;
+      hitResults.forEach((item, idx) => {
+        item.rsRating = n > 1 ? Math.round(((n - 1 - idx) / (n - 1)) * 100) : 99;
+      });
+
       scannerHits = hitResults;
       scannerIndex = -1;
       document.getElementById('scanPrevBtn').disabled = false;
@@ -1619,20 +1719,19 @@
         return;
       }
 
-      const rsResults = [];
-      for (let i = 0; i < tickers.length; i++) {
-        const sym = tickers[i];
-        setStatus(`Ranking ${sym} (${i + 1}/${tickers.length})...`);
-
+      let doneCount = 0;
+      const rsResults = (await mapConcurrent(tickers, 6, async (sym) => {
         try {
           const r = await fetchPctChange(sym);
-          if (!r) continue;
+          doneCount++;
+          setStatus(`Ranking ${doneCount}/${tickers.length} tickers...`);
+          if (!r) return null;
           const rsScore = r.pctChange - benchmark.pctChange;
-          rsResults.push({ symbol: sym, lastPrice: r.lastPrice, pctChange: r.pctChange, rsScore });
+          return { symbol: sym, lastPrice: r.lastPrice, pctChange: r.pctChange, rsScore };
         } catch (err) {
-          console.error(`Error ranking ${sym}:`, err);
+          return null;
         }
-      }
+      })).filter(Boolean);
 
       if (rsResults.length === 0) {
         setStatus('No RS data available for this watchlist.', true);
@@ -1660,7 +1759,7 @@
 
       if (leaders.length === 0) {
         const best = rsResults[0];
-        resultsContainer.innerHTML = `<div style="color: var(--text-muted); font-size:11px; text-align:center; padding:10px;">No names with RS&gt;80. Strongest in this watchlist: ${best.symbol} (RS ${best.rsRating}).</div>`;
+        resultsContainer.innerHTML = `<div style="color: var(--text-muted); font-size:11px; text-align:center; padding:10px;">No names with RS&gt;80. Strongest: ${best.symbol} (RS ${best.rsRating}).</div>`;
         scannerHits = [];
         scannerIndex = -1;
         document.getElementById('scanPrevBtn').disabled = true;
